@@ -66,10 +66,6 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
 
     int x, y;
 
-    for (y = 0; y < side; y++)
-        for (x = 0; x < side; x++)
-            breadCrumbs[x + side * y] = INT_MAX;
-
     currentX = side / 2, currentY = side / 2;
 
     char *sndToken = strtok(sndWire, ",");
@@ -83,9 +79,8 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
                 stepCountY++;
 
                 if (wireBox[currentX + side * --currentY]) {
-                    breadCrumbs[currentX + side * currentY] =
-                        stepCountX + stepCountY +
-                        wireBox[currentX + side * currentY];
+                    breadCrumbs[stepCountX + stepCountY +
+                                wireBox[currentX + side * currentY]]++;
 
                     int current =
                         manhattan(side / 2, currentX, side / 2, currentY);
@@ -99,9 +94,8 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
                 stepCountX++;
 
                 if (wireBox[++currentX + side * currentY]) {
-                    breadCrumbs[currentX + side * currentY] =
-                        stepCountX + stepCountY +
-                        wireBox[currentX + side * currentY];
+                    breadCrumbs[stepCountX + stepCountY +
+                                wireBox[currentX + side * currentY]]++;
 
                     int current =
                         manhattan(side / 2, currentX, side / 2, currentY);
@@ -115,9 +109,8 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
                 stepCountY++;
 
                 if (wireBox[currentX + side * ++currentY]) {
-                    breadCrumbs[currentX + side * currentY] =
-                        stepCountX + stepCountY +
-                        wireBox[currentX + side * currentY];
+                    breadCrumbs[stepCountX + stepCountY +
+                                wireBox[currentX + side * currentY]]++;
 
                     int current =
                         manhattan(side / 2, currentX, side / 2, currentY);
@@ -131,9 +124,8 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
                 stepCountX++;
 
                 if (wireBox[--currentX + side * currentY]) {
-                    breadCrumbs[currentX + side * currentY] =
-                        stepCountX + stepCountY +
-                        wireBox[currentX + side * currentY];
+                    breadCrumbs[stepCountX + stepCountY +
+                                wireBox[currentX + side * currentY]]++;
 
                     int current =
                         manhattan(side / 2, currentX, side / 2, currentY);
@@ -147,13 +139,10 @@ int traceCables(int lenFst, char *fstWire, const int lenSnd, char *sndWire) {
         sndToken = strtok(NULL, ",");
     }
 
-    shortest = INT_MAX;
-
     for (y = 0; y < side; y++)
         for (x = 0; x < side; x++)
-            shortest = (breadCrumbs[x + side * y] < shortest)
-                           ? breadCrumbs[x + side * y]
-                           : shortest;
+            if (breadCrumbs[x + side * y])
+                return x + side * y;
 
     return shortest;
 }
