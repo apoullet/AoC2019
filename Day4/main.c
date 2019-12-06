@@ -52,14 +52,85 @@ int *generateIncreasingNums(int start, int end, int *size) {
     return nums;
 }
 
-/* TODO: Find in between which numbers from arr min and max fit*/
-int *getExtremes(int size, int arr[size], int min, int max) { return arr; }
+int *getExtremes(int size, int *arr, int min, int max) {
+    int current = size >> 1, jump = size >> 2,
+        *extremes = malloc(sizeof(int) << 1);
 
-/* TODO: Count numbers that don't contain any identical adjacent digits*/
+    do {
+        current = (arr[current] > min) ? current - jump : current + jump;
+        jump    = jump >> 1;
+    } while (jump > 0);
+
+    while (arr[current] > min)
+        current--;
+
+    extremes[0] = current;
+
+    current = size >> 1, jump = size >> 2;
+
+    do {
+        current = (arr[current] > max) ? current - jump : current + jump;
+        jump    = jump >> 1;
+    } while (jump > 0);
+
+    while (arr[current] < max)
+        current++;
+
+    extremes[1] = current;
+
+    return extremes;
+}
+
+int hasRepeating(int n) {
+    int current = n % 10, tmp = n / 10;
+
+    while (tmp > 0) {
+        int rem = tmp % 10;
+
+        if (current == rem)
+            return 1;
+
+        current = rem;
+        tmp /= 10;
+    }
+
+    return 0;
+}
+
+int hasDoubleRepeating(int n) {
+    int current = n % 10, tmp = n / 10, count = 1;
+
+    while (tmp > 0) {
+        int rem = tmp % 10;
+
+        if (current == rem) {
+            count++;
+        } else {
+            if (count == 2)
+                return 1;
+            else
+                count = 1;
+        }
+
+        current = rem;
+        tmp /= 10;
+    }
+
+    return (count == 2);
+}
+
 int main() {
     int size = 0;
 
-    int *nums = generateIncreasingNums(284639, 748759, &size);
+    int *nums     = generateIncreasingNums(284639, 748759, &size);
+    int *extremes = getExtremes(size, nums, 284639, 748759);
+
+    int min = extremes[0], max = extremes[1], i, count = 0;
+
+    for (i = min + 1; i < max; ++i)
+        count += (hasDoubleRepeating(nums[i])) ? 0 : 1;
+
+    printf("%d\n", max - 1 - (min + 1) - count + 1);
 
     return 0;
 }
