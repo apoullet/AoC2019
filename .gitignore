@@ -1,3 +1,17 @@
-*/*
-!*/*.c
-!*/*.hs
+# C
+**/Makefile
+
+# Haskell
+**/main.hi
+**/main.o
+
+# Rust
+**/target/
+**/Cargo.toml
+**/Cargo.lock
+
+# Binaries
+**/main
+
+# Input files
+**/*.txt
